@@ -1,0 +1,11 @@
+
+<div >
+<ul class="row">
+  <li  ng-repeat="item in foundMenu" class="col-xs-12">
+    {{ item.short_name }} , {{ item.name }} , {{ item.description }}
+    <button ng-click="onRemove({index: $index});">Don't want this one!</button>
+  </li>
+</ul>
+</div>
+<div class="error row" >{{message}}</div>
+
