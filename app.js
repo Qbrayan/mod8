@@ -5,7 +5,7 @@
 angular.module('NarrowItDownApp', [])
 .controller('NarrowItDownController', NarrowItDownController)
 .service('MenuSearchService', MenuSearchService)
-.constant('ApiBasePath', "http://davids-restaurant.herokuapp.com")
+.constant('ApiBasePath', "https://davids-restaurant.herokuapp.com")
 .directive('foundItems', FoundItemsDirective);
 
 
@@ -15,28 +15,12 @@ function FoundItemsDirective() {
     scope: {
       foundMenu: '<',
       onRemove: '&',
-      message:'<'
     },
-    // controller: FoundItemsDirectiveController,
-    // controllerAs: 'list',
-    // bindToController: true
   };
 
   return ddo;
 }
 
-
-// function FoundItemsDirectiveController() {
-//   var list = this;
-
-//   list.foodInList = function () {
-//       if ( list.found == '') {
-//         return true;
-//       }
-
-//     return false;
-//   };
-// }
 
 
 NarrowItDownController.$inject = ['MenuSearchService'];
@@ -44,18 +28,13 @@ function NarrowItDownController(MenuSearchService) {
   var menu = this;
 
   menu.search ="";
-  menu.message ="";
-  menu.found =[];
-
+  
   menu.searchItem = function () {
+    menu.found =[];
     var promise = MenuSearchService.getMatchedMenuItems(menu.search)
     .then(function(response){
-          menu.found=response;
-          if(menu.found.length < 1){
-            menu.message= "Nothing found";}
-          else {menu.message= "";}
-        });
-    
+        menu.found = response;
+    });  
   };
 
   menu.removeItem = function (itemIndex) {
@@ -76,27 +55,22 @@ function MenuSearchService($http, ApiBasePath) {
       url: (ApiBasePath + "/menu_items.json")
 
     }).then(function (response) {
-      var items =response.data.menu_items;
-      if (searchTerm != "" ){
-      for (var i = 0; i < items.length; i++) {
+        var items =response.data.menu_items;
+        if (searchTerm !== "" ){
+          for (var i = 0; i < items.length; i++) {
 
-        if (items[i].description.indexOf(searchTerm) !== -1) {
-          foundItems.push(items[i]);
-
+            if (items[i].description.indexOf(searchTerm) !== -1) {
+              foundItems.push(items[i]);
+            }
+          }
         }
-      }
-     }
-     //console.log(foundItems.length);
-     //console.log(searchTerm);
       return foundItems;
     })
-    .catch(function (error) {
+      .catch(function (error) {
       console.log(error);
     })
-
   };
 
- 
 }
 
 })();
